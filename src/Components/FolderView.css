@@ -1,0 +1,21 @@
+.folder-container, .file {
+  margin: 5px;
+  margin-left: 10px;
+}
+
+.folder-container {
+  border: 1px solid #e7e7e7;
+}
+
+.folder-name {
+  font-weight: bold;
+}
+
+.folder-name, .file {
+  padding: 5px;
+}
+
+.folder-name:hover, .file:hover {
+  background-color: rgb(210, 210, 210);
+  cursor: pointer;
+}
