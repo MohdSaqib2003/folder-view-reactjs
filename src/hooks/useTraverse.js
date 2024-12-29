@@ -10,5 +10,33 @@ export const useTraverseTree = () => {
     );
     return tree;
   };
-  return { addNewNode };
+
+  const deleteNode = (tree, id) => {
+    if (tree.id === id) {
+      return null;
+    }
+    // tree.items = tree.items
+    //   .map((item) => deleteNode(item, id))
+    //   .filter((item) => item !== null);
+    // return tree;
+
+    // same as above, but it creates new reference
+    return {
+      ...tree,
+      items: tree.items
+        .map((item) => deleteNode(item, id))
+        .filter((item) => item !== null),
+    };
+  };
+
+  const editName = (tree, id, updatedName) => {
+    if (tree.id === id) {
+      tree.name = updatedName;
+      return tree;
+    }
+    tree.items = tree.items.map((item) => editName(item, id, updatedName));
+    return tree;
+  };
+
+  return { addNewNode, deleteNode, editName };
 };

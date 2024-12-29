@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import "./FolderView.css";
 
-const FolderView = ({ data, insertNewNode }) => {
+const FolderView = ({
+  data,
+  insertNewNode,
+  handleDeleteNode,
+  handleEditName,
+}) => {
   const [expand, setExpand] = useState(false);
   const [inputField, setInputField] = useState({
     visible: false,
     isFolder: false,
   });
+  const [editValue, setEditValue] = useState("");
 
   // handle on add new folder or file (when user presses enter key)
   const onAddNewFolderOrFile = (e) => {
@@ -34,42 +40,83 @@ const FolderView = ({ data, insertNewNode }) => {
     setExpand(true);
   };
 
+  const onEditName = (e) => {
+    if (e.keyCode === 13) {
+      handleEditName(data.id, e.target.value);
+      setEditValue("");
+    }
+  };
+
   // check not file, folder logic that may contain nested folders/files
   if (data.isFolder) {
     return (
       <div className="folder-container">
-        <div className="folder-name" onClick={() => setExpand(!expand)}>
+        <div
+          className="folder-name"
+          onClick={() => setExpand(!expand)}
+          onDoubleClick={() => setEditValue(data.name)} // also update name on double click
+        >
           <img
-            src={expand ? "assests/expand.png" : "assests/collapse.png"}
+            src={expand ? "assets/expand.png" : "assets/collapse.png"}
             alt="folder"
             width={10}
           />{" "}
-          {data.name} {/* Add new folder or file icons */}
-          <span
-            onClick={(e) => e.stopPropagation()}
-            className="add-new-folder-file-buttons"
-          >
-            <img
-              src="assests/folder.png"
-              alt="folder"
-              width={12}
-              onClick={() => handleNewFolderOrFile(true)}
+          {!editValue ? (
+            data.name
+          ) : (
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={onEditName}
+              autoFocus
+              onBlur={() => setEditValue("")}
             />
+          )}
+          {!editValue && (
+            <span
+              onClick={(e) => e.stopPropagation()}
+              className="add-new-folder-file-buttons"
+            >
+              <span>
+                <img
+                  src="assets/folder.png"
+                  alt="folder"
+                  width={12}
+                  onClick={() => handleNewFolderOrFile(true)}
+                />
+                <img
+                  src="assets/file.png"
+                  alt="file"
+                  width={12}
+                  onClick={() => handleNewFolderOrFile(false)}
+                />
+              </span>
 
-            <img
-              src="assests/file.png"
-              alt="file"
-              width={12}
-              onClick={() => handleNewFolderOrFile(false)}
-            />
-          </span>
+              <span>
+                <img
+                  src="assets/delete.png"
+                  alt="delete"
+                  width={12}
+                  onClick={() => handleDeleteNode(data.id)}
+                />{" "}
+                <img
+                  src="assets/edit.png"
+                  alt="edit"
+                  width={12}
+                  onClick={() => setEditValue(data.name)}
+                />
+              </span>
+            </span>
+          )}
         </div>
+
         <div>
           {inputField.visible && (
             <div className="new-folder-file-input">
               {/* When user click on add new folder show collapse (>) icon */}
               {inputField.isFolder && (
-                <img src="assests/collapse.png" alt="folder" width={10} />
+                <img src="assets/collapse.png" alt="folder" width={10} />
               )}{" "}
               <input
                 type="text"
@@ -93,6 +140,8 @@ const FolderView = ({ data, insertNewNode }) => {
                 data={item}
                 insertNewNode={insertNewNode}
                 key={item.id}
+                handleDeleteNode={handleDeleteNode}
+                handleEditName={handleEditName}
               />
             );
           })}
@@ -100,7 +149,41 @@ const FolderView = ({ data, insertNewNode }) => {
       </div>
     );
   } else {
-    return <div className="file">{data.name}</div>;
+    return (
+      <div className="file" onDoubleClick={() => setEditValue(data.name)}>
+        <span>
+          {!editValue ? (
+            data.name
+          ) : (
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={onEditName} // onChange doesn't provide keyCode
+              autoFocus
+              onBlur={() => setEditValue("")} // blur triggers when input field loses focus
+            />
+          )}
+          {/* {data.name}  */}
+        </span>{" "}
+        {data.id && !editValue && (
+          <span>
+            <img
+              src="assets/delete.png"
+              alt="delete"
+              width={12}
+              onClick={() => handleDeleteNode(data.id)}
+            />{" "}
+            <img
+              src="assets/edit.png"
+              alt="edit"
+              width={12}
+              onClick={() => setEditValue(data.name)}
+            />
+          </span>
+        )}
+      </div>
+    );
   }
 };
 
