@@ -1,21 +1,31 @@
-.folder-container, .file {
+.folder-container,
+.file,
+.new-folder-file-input {
   margin: 5px;
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
 .folder-container {
-  border: 1px solid #e7e7e7;
+  border: 1px solid #f5f5f5;
+}
+.add-new-folder-file-buttons {
+  margin-left: 10px;
+  img {
+    margin-left: 10px;
+  }
 }
 
 .folder-name {
   font-weight: bold;
 }
 
-.folder-name, .file {
+.folder-name,
+.file {
   padding: 5px;
 }
 
-.folder-name:hover, .file:hover {
+.folder-name:hover,
+.file:hover {
   background-color: rgb(210, 210, 210);
   cursor: pointer;
 }
